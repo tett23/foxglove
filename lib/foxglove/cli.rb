@@ -70,7 +70,11 @@ HAML
       compile_items = search(config[:assets_dir])
       compile_items.each do |item|
         in_ext = File.extname(item).gsub(/^\./, '').to_sym
-        next unless asset_adapter.adapters.key?(in_ext)
+        unless asset_adapter.adapters.key?(in_ext)
+          message = "#{in_ext}に対応するAdapterが存在しません: #{item}"
+          say message, :red
+          next
+        end
 
         compiled = asset_adapter.compile(item)
 
@@ -80,6 +84,9 @@ HAML
         out_dir = out_path.split('/')[0..-2].join('/')
         FileUtils.mkdir_p(out_dir)
         open(out_path, 'w').print(compiled)
+
+        message = "compile: #{item} -> #{out_path}"
+        say message, :green
       end
     end
 
