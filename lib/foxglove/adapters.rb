@@ -19,6 +19,12 @@ module Foxglove
       adapter.compile(path)
     end
 
+    def compilable?(path)
+      ext = File.extname(path).gsub(/^\./, '').to_sym
+
+      adapters.key?(ext)
+    end
+
     private
     def load_adapters
       @adapters = {}

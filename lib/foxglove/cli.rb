@@ -50,28 +50,27 @@ HAML
       say 'create foxglove template: '+dir_name, :green
     end
 
-    desc 'release', 'compile pages'
+    desc 'release', 'release sources'
     def release(in_path=nil, out_path=nil)
       asset_adapter = Foxglove::Adapters.new()
       compile_items = search(Foxglove.config[:source_dir])
 
       compile_items.each do |item|
-        in_ext = File.extname(item).gsub(/^\./, '').to_sym
-        unless asset_adapter.adapters.key?(in_ext)
-          message = "#{in_ext}に対応するAdapterが存在しません: #{item}"
-          say message, :red
-          next
+        unless asset_adapter.compilable?(item)
+          out = open(item, 'rb').read
+          out_path = Foxglove.config[:output_dir]+item.gsub(/^#{Foxglove.config[:source_dir]}/, '')
+        else
+          out = asset_adapter.compile(item)
+          in_ext = File.extname(item).gsub(/^\./, '').to_sym
+          out_ext = asset_adapter.adapters[in_ext].output_ext
+          out_path = Foxglove.config[:output_dir]+item.gsub(/^#{Foxglove.config[:source_dir]}/, '').gsub(/#{in_ext.to_s}$/, out_ext.to_s)
         end
 
-        compiled = asset_adapter.compile(item)
-        out_ext = asset_adapter.adapters[in_ext].output_ext
-        out_path = Foxglove.config[:output_dir]+item.gsub(/^#{Foxglove.config[:source_dir]}/, '').gsub(/#{in_ext.to_s}$/, out_ext.to_s)
         out_dir = out_path.split('/')[0..-2].join('/')
-
         FileUtils.mkdir_p(out_dir)
-        open(out_path, 'w').print(compiled)
+        open(out_path, 'w').print(out)
 
-        message = "compile: #{item} -> #{out_path}"
+        message = "create: #{item} -> #{out_path}"
         say message, :green
       end
     end
