@@ -51,7 +51,7 @@ HAML
     end
 
     desc 'release', 'release sources'
-    def release(in_path=nil, out_path=nil)
+    def release
       asset_adapter = Foxglove::Adapters.new()
       compile_items = search(Foxglove.config[:source_dir])
 
