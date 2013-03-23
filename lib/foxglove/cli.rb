@@ -65,7 +65,7 @@ HAML
 
         compiled = asset_adapter.compile(item)
         out_ext = asset_adapter.adapters[in_ext].output_ext
-        out_path = Foxglove.config[:output_dir]+item.gsub(/^#{Foxglove.config[:source_dir]}/, '').gsub(in_ext.to_s, out_ext.to_s)
+        out_path = Foxglove.config[:output_dir]+item.gsub(/^#{Foxglove.config[:source_dir]}/, '').gsub(/#{in_ext.to_s}$/, out_ext.to_s)
         out_dir = out_path.split('/')[0..-2].join('/')
 
         FileUtils.mkdir_p(out_dir)
