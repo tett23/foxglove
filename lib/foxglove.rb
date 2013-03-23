@@ -19,6 +19,6 @@ module Foxglove
     }
     config = YAML.load_file('./config/foxglove.yml').symbolize_keys()
 
-    @config = default.merge(default)
+    @config = default.merge(config)
   end
 end
