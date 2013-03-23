@@ -13,7 +13,8 @@ module Foxglove
       template_dir: './templates',
       default_template: 'common.haml',
       output_dir: './public',
-      source_dir: './sources'
+      source_dir: './sources',
+      lib_dir: './lib'
     }
     config = YAML.load_file('./config/foxglove.yml').symbolize_keys()
 

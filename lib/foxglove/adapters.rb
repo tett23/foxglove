@@ -23,6 +23,8 @@ module Foxglove
     def load_adapters
       @adapters = {}
 
+      Dir[Foxglove.config[:lib_dir]+"/adapters/*.rb"].each {|file| require file }
+
       foxglove_constants = Foxglove.constants - Object.constants
       adapters = foxglove_constants.delete_if do |item|
         !item.match(/Adapter$/)
