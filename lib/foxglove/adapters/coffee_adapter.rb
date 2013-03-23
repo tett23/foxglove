@@ -1,7 +1,5 @@
 require 'coffee-script'
 
-require 'foxglove/adapters/adapter_interface'
-
 module Foxglove
   class CoffeeAdapter
     def compile(path)

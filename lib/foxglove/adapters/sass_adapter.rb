@@ -1,7 +1,5 @@
 require 'sass'
 
-require 'foxglove/adapters/adapter_interface'
-
 module Foxglove
   class SassAdapter
     def initialize

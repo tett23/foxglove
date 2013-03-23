@@ -1,10 +1,6 @@
 require 'foxglove'
 require 'thor'
-require 'yaml'
-require 'active_support'
-require 'active_support/core_ext'
 
-require 'foxglove/render'
 require 'foxglove/adapters'
 
 module Foxglove
@@ -56,18 +52,9 @@ HAML
 
     desc 'release', 'compile pages'
     def release(in_path=nil, out_path=nil)
-      config = YAML.load_file('./config/foxglove.yml').symbolize_keys()
-      config = merge_options(config)
-
-      in_path ||= config[:pages_dir]
-      out_path ||= config[:output_dir]
-
-      template_path = [config[:template_dir], config[:default_template]].join('/')
-      engine = Foxglove::Render.new(template_path)
-      engine.render(in_path, out_path)
-
       asset_adapter = Foxglove::Adapters.new()
-      compile_items = search(config[:assets_dir])
+      compile_items = search(Foxglove.config[:source_dir])
+
       compile_items.each do |item|
         in_ext = File.extname(item).gsub(/^\./, '').to_sym
         unless asset_adapter.adapters.key?(in_ext)
@@ -77,11 +64,10 @@ HAML
         end
 
         compiled = asset_adapter.compile(item)
-
         out_ext = asset_adapter.adapters[in_ext].output_ext
-        out_path = config[:output_dir]+item.gsub(/^#{config[:assets_dir]}/, '').gsub(in_ext.to_s, out_ext.to_s)
-
+        out_path = Foxglove.config[:output_dir]+item.gsub(/^#{Foxglove.config[:source_dir]}/, '').gsub(in_ext.to_s, out_ext.to_s)
         out_dir = out_path.split('/')[0..-2].join('/')
+
         FileUtils.mkdir_p(out_dir)
         open(out_path, 'w').print(compiled)
 
@@ -109,20 +95,6 @@ HAML
       end
 
       items
-    end
-
-    def merge_options(options={})
-      options = options.symbolize_keys()
-      default = {
-        sitename: '',
-        template_dir: './sources/pages/templates',
-        default_template: 'common.haml',
-        pages_dir: './sources/pages',
-        output_dir: './public',
-        assets_dir: './sources/assets'
-      }
-
-      default.merge(options)
     end
   end
 end

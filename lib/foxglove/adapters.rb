@@ -1,5 +1,7 @@
+require 'foxglove/adapters/adapter_interface'
 require 'foxglove/adapters/sass_adapter'
 require 'foxglove/adapters/coffee_adapter'
+require 'foxglove/adapters/textile_adapter'
 
 module Foxglove
   class Adapters
