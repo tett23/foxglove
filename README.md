@@ -1,6 +1,6 @@
 # Foxglove
 
-TODO: Write a gem description
+Static page based CMS
 
 ## Installation
 
@@ -18,7 +18,6 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
 
 ## Contributing
 
