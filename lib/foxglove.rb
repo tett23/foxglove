@@ -14,7 +14,8 @@ module Foxglove
       default_template: 'common.haml',
       output_dir: './public',
       source_dir: './sources',
-      lib_dir: './lib'
+      lib_dir: './lib',
+      exclude_ext: %w{.swp .swo .DS_Store}
     }
     config = YAML.load_file('./config/foxglove.yml').symbolize_keys()
 

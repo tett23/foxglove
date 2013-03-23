@@ -77,7 +77,8 @@ HAML
 
     private
     def search(original_path, items=[])
-      exclude_items = /^(\.|\.\.)$/
+      exclude_items = (%w{. ..} + Foxglove.config[:exclude_ext]).join('|')
+      exclude_items = Regexp.new("^(#{exclude_items})$")
 
       [original_path] if File.file?(original_path)
 
