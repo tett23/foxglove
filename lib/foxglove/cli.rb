@@ -5,6 +5,7 @@ require 'active_support'
 require 'active_support/core_ext'
 
 require 'foxglove/render'
+require 'foxglove/adapters'
 
 module Foxglove
   class CLI < Thor
@@ -64,9 +65,45 @@ HAML
       template_path = [config[:template_dir], config[:default_template]].join('/')
       engine = Foxglove::Render.new(template_path)
       engine.render(in_path, out_path)
+
+      asset_adapter = Foxglove::Adapters.new()
+      compile_items = search(config[:assets_dir])
+      compile_items.each do |item|
+        in_ext = File.extname(item).gsub(/^\./, '').to_sym
+        next unless asset_adapter.adapters.key?(in_ext)
+
+        compiled = asset_adapter.compile(item)
+
+        out_ext = asset_adapter.adapters[in_ext].output_ext
+        out_path = config[:output_dir]+item.gsub(/^#{config[:assets_dir]}/, '').gsub(in_ext.to_s, out_ext.to_s)
+
+        out_dir = out_path.split('/')[0..-2].join('/')
+        FileUtils.mkdir_p(out_dir)
+        open(out_path, 'w').print(compiled)
+      end
     end
 
     private
+    def search(original_path, items=[])
+      exclude_items = /^(\.|\.\.)$/
+
+      [original_path] if File.file?(original_path)
+
+      Dir::entries(original_path).delete_if do |item|
+        item.match(exclude_items)
+      end.each do |item|
+        item = [original_path, item].join('/')
+
+        if File.file?(item)
+          items << item
+        else
+          search(item, items)
+        end
+      end
+
+      items
+    end
+
     def merge_options(options={})
       options = options.symbolize_keys()
       default = {
@@ -74,7 +111,8 @@ HAML
         template_dir: './sources/pages/templates',
         default_template: 'common.haml',
         pages_dir: './sources/pages',
-        output_dir: './public'
+        output_dir: './public',
+        assets_dir: './sources/assets'
       }
 
       default.merge(options)
