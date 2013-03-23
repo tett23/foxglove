@@ -16,14 +16,14 @@ module Foxglove
         return
       end
 
-      Dir.mkdir(dir_name)
+      FileUtils.mkdir_p(dir_name)
       say 'create: '+dir_name, :green
 
-      initialize_dir = %w{sources sources/assets sources/assets/stylesheets sources/assets/javascripts sources/pages sources/pages/templates lib lib/adapters config public}
+      initialize_dir = %w{sources sources/stylesheets sources/javascripts templates lib lib/adapters config public}
       initialize_dir.each do |dir|
         create_dir_name = dir_name+'/'+dir
 
-        Dir.mkdir(create_dir_name)
+        FileUtils.mkdir_p(create_dir_name)
         say 'create: '+create_dir_name, :green
       end
 
@@ -44,7 +44,7 @@ YAML
   %body
     =yield
 HAML
-      template_file_path = dir_name+'/sources/pages/templates/common.haml'
+      template_file_path = dir_name+'/templates/common.haml'
       f = open(template_file_path, 'w')
       f.print template_file
       f.close
