@@ -1,0 +1,48 @@
+h1. Foxglove
+
+h2. 使いかた
+
+Gemfileに以下を追加
+<pre>gem 'foxglove', :git=>'git://github.com/tett23/foxglove.git'</pre>
+
+以下を実行
+<pre>bundle install
+foxglove init <dir>
+</pre>
+で準備ができる。
+
+source以下にファイルを作り
+<pre>foxglove release</pre>
+ですべてコンパイルする。
+
+標準で対応しているのは以下の形式
+* Haml
+* Textile
+* CoffeeScript
+* Sass
+
+それ以外のものをコンパイルするには、
+lib/adapters以下にのようなクラスを書く。
+<pre>module Foxglove
+  class HamlAdapter
+    def compile(path)
+      Haml::Engine.new(open(path).read).to_html
+    end
+
+    def compilable_ext
+      [:haml]
+    end
+
+    def output_ext
+      :haml
+    end
+  end
+end
+</pre>
+必要な点は、
+* Foxglove以下にclassをつくる
+* クラス名はHogeAdapter（末尾にAdapterとつかないものは読み込まれない）
+* compile(path), compilable_ext, output_engineのメソッドを書く（メソッドが存在しなければエラーを吐く）
+** compile(path)はファイル変換のルール
+** compilable_extは変換可能な拡張子の配列
+** output_extは出力する拡張子名
