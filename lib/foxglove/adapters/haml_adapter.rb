@@ -11,7 +11,7 @@ module Foxglove
     end
 
     def output_ext
-      :haml
+      :html
     end
   end
 end
