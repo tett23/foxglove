@@ -18,7 +18,7 @@ module Foxglove
       Dir.mkdir(dir_name)
       say 'create: '+dir_name, :green
 
-      initialize_dir = %w{sources sources/assets sources/pages sources/pages/templates sources/adapter config public}
+      initialize_dir = %w{sources sources/assets sources/assets/stylesheets sources/assets/javascripts sources/pages sources/pages/templates lib lib/adapters config public}
       initialize_dir.each do |dir|
         create_dir_name = dir_name+'/'+dir
 
